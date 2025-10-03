@@ -34,6 +34,12 @@ namespace MscrmTools.SolutionComponentsDeduplicator.Forms
 
         public List<Entity> Solutions { get; set; }
 
+        public void AdjustColumnSize()
+        {
+            lvComponents.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+            lvComponents.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+        }
+
         public bool DisplayComponents(bool forceTypesProcessing = false)
         {
             pnlSuccess.Visible = sComponents.Count == 0;
@@ -46,7 +52,6 @@ namespace MscrmTools.SolutionComponentsDeduplicator.Forms
             }
 
             lvComponents.Items.Clear();
-
 
             var filteredComponents = sComponents
                 .Where(c => (string.IsNullOrEmpty(txtSearch.Text)
@@ -84,7 +89,7 @@ namespace MscrmTools.SolutionComponentsDeduplicator.Forms
             #region Listview components
 
             lvComponents.BeginUpdate();
-            lvComponents.ItemChecked -= lvComponents_ItemChecked; 
+            lvComponents.ItemChecked -= lvComponents_ItemChecked;
 
             if (lvComponents.Groups.Count == 0 || forceTypesProcessing)
             {
@@ -155,8 +160,8 @@ namespace MscrmTools.SolutionComponentsDeduplicator.Forms
             }
 
             lvComponents.Items.AddRange(tmp.ToArray());
-           
-           lvComponents.ItemChecked += lvComponents_ItemChecked;
+
+            lvComponents.ItemChecked += lvComponents_ItemChecked;
             lvComponents.EndUpdate();
             lvComponents_ItemChecked(lvComponents, new ItemCheckedEventArgs(null));
 
@@ -165,14 +170,6 @@ namespace MscrmTools.SolutionComponentsDeduplicator.Forms
             #endregion Listview components
 
             return true;
-        }
-
-        public void AdjustColumnSize()
-        {
-            lvComponents.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-            lvComponents.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-
-
         }
 
         public void LoadComponents(List<Entity> solutions, List<EntityMetadata> emds)
@@ -219,7 +216,7 @@ namespace MscrmTools.SolutionComponentsDeduplicator.Forms
                                 case 1: behavior = "Metadata only"; break;
                             }
 
-                            asc["name"] = $"{emds.First(e => e.MetadataId == objectId).DisplayName?.UserLocalizedLabel?.Label} ({behavior})";
+                            asc["name"] = emds.First(e => e.MetadataId == objectId).DisplayName?.UserLocalizedLabel?.Label;
                             asc["behavior"] = behavior;
                         }
                     }
@@ -463,11 +460,7 @@ namespace MscrmTools.SolutionComponentsDeduplicator.Forms
         private void cbbTypeFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
             DisplayComponents();
-
-           
         }
-
-        
 
         private void llCheckAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
